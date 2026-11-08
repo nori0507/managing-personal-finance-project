@@ -1,0 +1,24 @@
+{
+  "name": "managing-personal-finance-project",
+  "version": "1.0.0",
+  "description": "This application will help user managing their personal finance.\r The application solves the problem that many students and young adults face regarding their financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem, I can demonstrate both my technical and business skills.\r Through this project, I will be using skills such as HTML, CSS, and JavaScript for the frontend, Node.js and Express for the backend, and Sequelize for database management.",
+  "main": "api-service.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nori0507/managing-personal-finance-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nori0507/managing-personal-finance-project/issues"
+  },
+  "homepage": "https://github.com/nori0507/managing-personal-finance-project#readme",
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
