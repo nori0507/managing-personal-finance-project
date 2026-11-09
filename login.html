@@ -4,9 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
 </head>
 <body>
-    
+    <h1>Login</h1>
+
+    <!--Login submission form, login(event) function will be called-->
+    <form id="login-form" onsubmit="login(event)">
+        <!--getting input from the users-->
+        <input id="login-email" type="email" placeholder="Email" required>
+        <input id="login-password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <!--navigating to the sign up page tocreate a new account-->
+    <p>You do not have an account yet? <a href="signup.html">Sign Up</a> </p>
+    <!--showing message based on the condition-->
+    <p id="message"></p>
+
+    <!--connecting the html file with js file-->
+    <script src="login.js"></script>
 </body>
 </html>

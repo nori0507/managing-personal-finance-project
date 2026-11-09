@@ -1,0 +1,1 @@
+//using functions for the main page(index.html) with eventlisteners

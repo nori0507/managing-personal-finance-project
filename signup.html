@@ -4,9 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up</title>
+    <script src="signup.js" defer></script>
 </head>
 <body>
+    <h1>Create Account</h1>
+
+    <!--Account Creation Form-->
+    <form id="signup-form">
+        <!--Asking for the input-->
+        <input id="email-signup" type="email" placeholder="email" required>
+        <input id="password-signup" type="password" placeholder="password" required>
+        <button type="submit">Create Account</button>
+    </form>
+    <!--showing message based onthe web condition-->
+    <p id="message"></p>
+    
     
 </body>
 </html>

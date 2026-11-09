@@ -1,0 +1,1 @@
+// functions that will allow the applications to proceed some features (within main page index.html)
