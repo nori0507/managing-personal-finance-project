@@ -1,3 +1,4 @@
+// test file for the login function
 const { login } = require("../login"); //import login function
 const messageElement = {innerText: ""};
 //
