@@ -11,3 +11,18 @@ Architectural Decision: MVC
 The application uses Express.js on the backend to serve data dynamically via API endpoints, eliminating the need to hardcode content. JavaScript manages our core application logic—allowing us to write and test modular functions—while dynamically updating the UI for a seamless user experience. This separation of data, logic, and presentation reduces complexity and improves developer productivity.
 
 architecture:
+frontend
+index.html	Main page once the user login
+login.html	Login page 
+signup.html	Account registration page 
+styles.css	Styling the UI
+login.js	Login functionality and API requests
+signup.js	Account registration functionality and API requests
+script.js	Main page interactions and functionality
+financial-management-function.js	Reusable financions
+backend and database
+api-service.js	Node.js and Express.js, handle api with data in the database
+database.sqlite	SQLite database that store user's data
+package.json	Project dependencies and scripts
+package-lock.json	Records exact dependency versions
+_test_  test for the functions 
