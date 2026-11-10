@@ -26,3 +26,9 @@ database.sqlite	SQLite database that store user's data
 package.json	Project dependencies and scripts
 package-lock.json	Records exact dependency versions
 _test_  test for the functions 
+jest.config.js  Required to execute the npm test
+
+
+test:
+login success - however, this will never happen because of the server limitation so i added console.log("Success"); to login.js when the ok and json responce is right(window.location.href = "index.html" happens under the same if statement) we can see this "Success" as a part of return on the command when we run the test, so we can tell that function is working in the way that should work when it has successful conditions
+login failure - function shows the error message when the responce is not successful
