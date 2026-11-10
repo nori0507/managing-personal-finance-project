@@ -1,2 +1,18 @@
+# Dependencies
 node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Database files
+database.sqlite
+database.sqlite-shm
+database.sqlite-wal
+
+# Logs
+*.log
+
+# Operating system
 .DS_Store
+Thumbs.db

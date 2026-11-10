@@ -9,3 +9,5 @@ on the command screen
 
 Architectural Decision: MVC
 The application uses Express.js on the backend to serve data dynamically via API endpoints, eliminating the need to hardcode content. JavaScript manages our core application logic—allowing us to write and test modular functions—while dynamically updating the UI for a seamless user experience. This separation of data, logic, and presentation reduces complexity and improves developer productivity.
+
+architecture:
