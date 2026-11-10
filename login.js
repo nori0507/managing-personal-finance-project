@@ -25,6 +25,7 @@ async function login(event) {
 
         // check the login status
         if (response.ok && data.success) {
+            console.log("Success");
             window.location.href = "index.html"; //navigate to the main page when the log in was successful
         } else {
             document.getElementById("message").innerText ="Invalid email or password"; //show an error message when the login failed
@@ -34,3 +35,6 @@ async function login(event) {
         document.getElementById("message").innerText ="Unable to connect to the server"; //catch the surver error and displaying it
     }
 }
+
+//for test
+module.exports = { login };
