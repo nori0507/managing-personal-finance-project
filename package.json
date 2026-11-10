@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/nori0507/managing-personal-finance-project#readme",
   "devDependencies": {
-    "jest": "^30.5.2"
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
