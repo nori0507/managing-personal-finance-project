@@ -32,7 +32,7 @@ async function signup(event) {
             window.location.href = "login.html";
 
         } else {
-            messageElement.innerText = data.message || "Signup failed.";
+            messageElement.innerText = "Signup failed. The email already exists.";
         }
     } catch (error) {
         console.error("Signup error:", error);
@@ -48,4 +48,4 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 //for test
-module.exports = { login };
+module.exports = { signup };
