@@ -69,28 +69,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // update the record when the submission button is clicked
 // then display it as the current personal info
-document.getElementById("personal-info-form").addEventListener("submit", async (event) => {
-    event.preventDefault();
+const personalInfoForm = document.getElementById("personal-info-form");
+if (personalInfoForm) {
+    personalInfoForm.addEventListener("submit", async (event) => {
 
-    // collect the user's new information
-    const personalInfoData = {
-        fName: document.getElementById("f-name").value,
-        lName: document.getElementById("l-name").value,
-        phone: document.getElementById("phone").value,
-        email:document.getElementById("email").value,
-        address: document.getElementById("address").value,
-        country: document.getElementById("country").value
-    };
+        event.preventDefault();
 
-    try {
-        //update the info
-        const result = await updatePersonalInfo(personalInfoData);
-        // get the current info
-        const updatedInfo = await getPersonalInfo();
-        // display the info
-        displayPersonalInfo(updatedInfo);
-        document.getElementById("message").innerText = result.message;
-    } catch (error) {
-        document.getElementById("message").innerText ="Failed to update personal information.";
-    }
-});
+        // collect the user's new information
+        const personalInfoData = {
+            fName: document.getElementById("f-name").value,
+            lName: document.getElementById("l-name").value,
+            phone: document.getElementById("phone").value,
+            email:document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            country: document.getElementById("country").value
+        };
+
+        try {
+            //update the info
+            const result = await updatePersonalInfo(personalInfoData);
+            // get the current info
+            const updatedInfo = await getPersonalInfo();
+            // display the info
+            displayPersonalInfo(updatedInfo);
+            document.getElementById("message").innerText = result.message;
+        } catch (error) {
+            document.getElementById("message").innerText ="Failed to update personal information.";
+        }
+    })
+};
+
+if (typeof module !== "undefined") {
+    module.exports = { updatePersonalInfo, getPersonalInfo, displayPersonalInfo};
+}
