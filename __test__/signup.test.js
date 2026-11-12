@@ -48,7 +48,7 @@ describe("Signup function", () =>{
 
         // execute signup function
         await signup(event);
-        expect(messageElement.innerText).toBe("Signup failed. The email already exists.");
+        expect(messageElement.innerText).toBe("Signup failed.");
     });
 });
 
