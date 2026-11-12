@@ -30,7 +30,7 @@ jest.config.js  Required to execute the npm test
 
 
 test:
-login success - however, this will never happen because of the server limitation so i added console.log("Success"); to login.js when the ok and json responce is right(window.location.href = "index.html" happens under the same if statement) we can see this "Success" as a part of return on the command when we run the test, so we can tell that function is working in the way that should work when it has successful conditions
+login success - function shows success return when the http and json responce are successful
 login failure - function shows the error message when the http and json responce are not successful
 sign up success - returning successful message when the http and json responce are successful
 sign up failure - returning error message when the http and json responce are not successful

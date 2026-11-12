@@ -27,10 +27,7 @@ describe("Login function", () => {
 
         // execute the function
         await login(event);
-        expect(window.location.href).toBe("index.html"); // should be redirected to the index.html
-        //however, this will never happen because of the server limitation
-        // so i added console.log("Success"); to login.js when the ok and json responce is right (window.location.href = "index.html" happens under the same if statement) 
-        // we can see this "Success" as a part of return on the command when we run the test, so we can tell that function is working in the way that should work when it has successful conditions
+        expect(document.getElementById("message").innerText).toBe("login success");
     });
 
     // expect the return forthe failed case
