@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Information Page for Personal Financial Management Application</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="personal-info.js" defer></script>
 </head>
 <body>
     <h1>Personal Financial Management Application</h1>
@@ -13,13 +14,42 @@
 
     <!--Shows the current personal information-->
     <section>
-        <p>This is you current personal information</p>
+        <h3>This is you current personal information</h3>
+        <p>First Name: <span id="current-f-name">Loading...</span></p>
+        <p>Last Name: <span id="current-l-name">Loading...</span></p>
+        <p>Email: <span id="current-email">Loading...</span></p>
+        <p>Phone Number: <span id="current-phone">Loading...</span></p>
+        <p>Address: <span id="current-address">Loading...</span></p>
+        <p>Country: <span id="current-country">Loading...</span></p>
+        <p id="message"></p>
     </section>
 
     <!--Users can eneter new values and that will be reflected tothe current personal info section-->
     <section>
-        <p>you can modify your personal informationhere</p>
-
+        <h3>you can modify your personal information here</h3>
+        <p>Plesase fill out every fields</p>
+        <form id="personal-info-form">
+            <!--let users input first name-->
+            <label for="f-name">First Name:</label>
+            <input type="text" id="f-name" name="firstName" required>
+            <!--let users input last name-->
+            <label for="l-name">Last Name:</label>
+            <input type="text" id="l-name" name="lastName" required>
+            <!--let users input phone number-->
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <!--let users input email-->
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+            <!--let users input address-->
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+            <!--let users input country-->
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+            <!--change saving button, the change will be reflected oncethis button is clicked-->
+            <button type="submit">Save Changes</button>
+        </form>
     </section>
 </body>
 <footer>

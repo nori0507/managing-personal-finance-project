@@ -4,7 +4,8 @@
   "description": "This application will help user managing their personal finance.\r The application solves the problem that many students and young adults face regarding their financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem, I can demonstrate both my technical and business skills.\r Through this project, I will be using skills such as HTML, CSS, and JavaScript for the frontend, Node.js and Express for the backend, and Sequelize for database management.",
   "main": "api-service.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node api-service.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,9 @@
     "bcryptjs": "^3.0.3",
     "corps": "^0.1.0",
     "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
     "express": "^5.3.0",
+    "express-session": "^1.19.0",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   }
