@@ -9,9 +9,9 @@ async function signup(event) {
     const messageElement = document.getElementById("message");
 
     try {
-        const response = await fetch("http://localhost:3000/signup", {
+        const response = await fetch("http://127.0.0.1:3000/signup", {
             method: "POST",
-            eaders: {
+            headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -21,18 +21,15 @@ async function signup(event) {
             });
 
         const data = await response.json();
+        console.log("HTTP status:", response.status);
+        console.log("Signup response:", data);
 
         if (response.ok && data.success) {
-            messageElement.innerText = "Account created successfully!";
-
-            // wait 1.5 seconds so the user can read the success message
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
+            messageElement.innerText = "Account created successfully!";    
             // redirect to the login page
-            window.location.href = "login.html";
-
+            window.location.href = "./login.html";
         } else {
-            messageElement.innerText = "Signup failed. The email already exists.";
+            messageElement.innerText = "Signup failed.";
         }
     } catch (error) {
         console.error("Signup error:", error);
@@ -46,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!signupForm) return;
     signupForm.addEventListener("submit", signup);
 })
-
 //for test
-module.exports = { signup };
+if (typeof module !== "undefined") {
+    module.exports = { signup };
+}

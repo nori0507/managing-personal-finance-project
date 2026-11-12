@@ -1,5 +1,4 @@
 async function login(event) {
-
     // prevent the form from refreshing the page
     event.preventDefault();
 
@@ -8,27 +7,31 @@ async function login(event) {
     const password = document.getElementById("login-password").value;
 
     try {
-
         // send login request to backend
-        const response = await fetch("http://localhost:3000/login", {
+        const response = await fetch("http://127.0.0.1:3000/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: "include",
             body: JSON.stringify({
-                email:email,
-                password:password
+                email: email,
+                password: password
             })
         });
 
         const data = await response.json();
 
         // check the login status
+        console.log("Login HTTP status:", response.status);
+        console.log("Login response:", data);
+
         if (response.ok && data.success) {
-            console.log("Success");
-            window.location.href = "index.html"; //navigate to the main page when the log in was successful
+            console.log("Login successful!");
+            window.location.href = "index.html";
         } else {
-            document.getElementById("message").innerText ="Invalid email or password"; //show an error message when the login failed
+            document.getElementById("message").innerText =
+                data.message || "Invalid email or password";
         }
 
     } catch (error) {
@@ -37,4 +40,6 @@ async function login(event) {
 }
 
 //for test
-module.exports = { login };
+if (typeof module !== "undefined") {
+    module.exports = { login };
+}
