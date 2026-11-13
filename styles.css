@@ -63,5 +63,16 @@ p{
     text-align: center;
 }
 
+.transaction-form-format{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#personal-info-nav{
+    text-align: center;
+}
 
 /*adjust to small windows*/

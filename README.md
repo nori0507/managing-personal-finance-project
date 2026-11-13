@@ -7,8 +7,14 @@ to start the server, put
 node api-server.js
 on the command screen
 
-Architectural Decision: MVC
+Architectural Decision: 
+MVC:
 The application uses Express.js on the backend to serve data dynamically via API endpoints, eliminating the need to hardcode content. JavaScript manages our core application logic—allowing us to write and test modular functions—while dynamically updating the UI for a seamless user experience. This separation of data, logic, and presentation reduces complexity and improves developer productivity.
+Observer: 
+when the account is created, the personal info for that account will be created
+when the personal info within the table is modified, the userinterface will be modified according to it
+when the transaction record is updated, the account balance display will be modified
+
 
 architecture:
 frontend
@@ -41,8 +47,14 @@ update personal info fail
 get personal info success
 get personal info fail
 dislpay personal info success
+category update success
+categpry update fail
+save transaction success
+save transaction fail
 
 
 Note for improvement:
 The sprint did not mention about it at all, but i believe I should add logout function since we have login. I have not implemented it yet, but I will be adding it eventually.
 I have to adjust the layout for the smaller windows.
+
+Feature improvement required based on sprint2:

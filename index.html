@@ -11,18 +11,19 @@
 <body>
     <main>
         <h1>Personal Financial Management</h1>
+        <h2>Welcome to the Main Page!</h2>
         <!--Connect to the personal infromation page, users can check and modify their personal info-->
         <nav>
-            <h2>Personal Information</h2>
-            <p>Click <a href="personalinfo.html">here</a> to check or modify your personal information</p>
+            <h3>Personal Information</h3>
+            <p id="personal-info-nav">Click <a href="personalinfo.html">here</a> to check or modify your personal information</p>
         </nav>
 
         <!--related to money tracking-->
         <article>
             <!--showing the balance of users-->
-            <h2>Your Current Balance Status</h2>
+            <h3>Your Current Balance Status</h3>
             <section>
-                <ul>
+                <ul class="account-card">
                     <li>Bank Savings</li>
                     <li>Cash Saving</li>
                     <li>Total</li>
@@ -30,8 +31,8 @@
             </section>
             <!--Function where users can input the expense and income-->
             <section>
-                <h2>Record Your Expense and Income</h2>
-                <form id="transaction-form">
+                <h3>Record Your Expense and Income</h3>
+                <form id="transaction-form" class="transaction-form-format">
                     <!--let user choose the transaction type-->
                     <label for="transaction-type">Transaction Type:</label>
                     <select id="transaction-type" required>
