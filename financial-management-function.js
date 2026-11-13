@@ -114,5 +114,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // export functions for unit tests
 if (typeof module !== "undefined") {
-    module.exports = {updateCategories};
+    module.exports = {updateCategories, saveTransaction};
 }
