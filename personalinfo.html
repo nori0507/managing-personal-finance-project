@@ -9,12 +9,12 @@
     <script src="personal-info.js" defer></script>
 </head>
 <body>
-    <h1>Personal Financial Management Application</h1>
+    <h1>Personal Financial Management</h1>
     <h2>Personal Information</h2>
 
     <!--Shows the current personal information-->
-    <section>
-        <h3>This is you current personal information</h3>
+    <section class="current-personal-info">
+        <h3>Current Personal Information</h3>
         <p>First Name: <span id="current-f-name">Loading...</span></p>
         <p>Last Name: <span id="current-l-name">Loading...</span></p>
         <p>Email: <span id="current-email">Loading...</span></p>
@@ -25,10 +25,10 @@
     </section>
 
     <!--Users can eneter new values and that will be reflected tothe current personal info section-->
-    <section>
-        <h3>you can modify your personal information here</h3>
-        <p>Plesase fill out every fields</p>
-        <form id="personal-info-form">
+    <section class="personal-info-modify">
+        <h3>Modify your personal information here</h3>
+        <p id="personal-modification-note">Plesase fill out every fields</p>
+        <form class="personal-info-form">
             <!--let users input first name-->
             <label for="f-name">First Name:</label>
             <input type="text" id="f-name" name="firstName" required>
