@@ -15,9 +15,11 @@ frontend
 index.html	Main page once the user login
 login.html	Login page 
 signup.html	Account registration page 
+personalinfo.html Personal Information page
 styles.css	Styling the UI
 login.js	Login functionality and API requests
 signup.js	Account registration functionality and API requests
+personal-info.js  Personal information functionalities and API requests
 script.js	Main page interactions and functionality
 financial-management-function.js	Reusable financions
 backend and database
@@ -30,7 +32,17 @@ jest.config.js  Required to execute the npm test
 
 
 test:
-login success - function shows success return when the http and json responce are successful
-login failure - function shows the error message when the http and json responce are not successful
-sign up success - returning successful message when the http and json responce are successful
-sign up failure - returning error message when the http and json responce are not successful
+login success 
+login failure 
+sign up success 
+sign up failure 
+update personal info success
+update personal info fail
+get personal info success
+get personal info fail
+dislpay personal info success
+
+
+Note for improvement:
+The sprint did not mention about it at all, but i believe I should add logout function since we have login. I have not implemented it yet, but I will be adding it eventually.
+I have to adjust the layout for the smaller windows.
