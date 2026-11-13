@@ -121,6 +121,61 @@ PersonalInfo.belongsTo(User, {
     targetKey: "id"
 });
 
+// transaction model
+const Transaction = sequelize.define("Transaction", {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    type: {
+        type: DataTypes.ENUM("income", "expense"),
+        allowNull: false
+    },
+    account: {
+        type: DataTypes.ENUM("bank", "cash"),
+        allowNull: false
+    },
+    amount: {
+        type: DataTypes.DECIMAL(12, 2),
+        allowNull: false,
+        validate: {
+            min: 0.01
+        }
+    },
+    category: {
+        type: DataTypes.ENUM("salary", "side gig", "investment", "housing", "utilities", "groceries", 
+            "dining out", "transportation", "shopping", "health", "hobby", "others"),
+        allowNull:false
+    },
+    date: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+}, {
+    tableName: "transactions",
+    timestamps: true
+});
+
+// one user can have many transactions
+User.hasMany(Transaction, {
+    foreignKey: "userId",
+    onDelete: "CASCADE"
+});
+
+// each transaction belongs to one user
+Transaction.belongsTo(User, {
+    foreignKey: "userId"
+});
+
 // signup, adding an account. it also creates an associated personal information record because they relate each other by userid
 app.post("/signup", async (req, res) => {
     try {
@@ -363,6 +418,88 @@ app.put("/personal-info", requireLogin, async (req, res) => {
         });
     }
 });
+
+
+// create a new transaction recprd
+app.post("/transactions", requireLogin, async (req, res) => {
+    try {
+        // identify the currently logged-in user
+        const userId = req.session.userId;
+
+        // get transaction data that was inputted by user from the frontend
+        const { type, account, amount, category, date, description} = req.body;
+
+        // define valid categories for each transaction type
+        const validCategories = {
+            income: ["salary", "side gig", "investment", "others"],
+            expense: ["housing", "utilities", "groceries", "dining out", "transportation", "shopping", "health", "hobby", "others"]
+        };
+
+        // validate transaction type and category
+        if (!validCategories[type]?.includes(category)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid transaction type or category."
+            });
+        }
+
+        // validate account
+        if (!["bank", "cash"].includes(account)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid account."
+            });
+        }
+
+        // validate amount (positive, with at most two decimal places)
+        const amountText = String(amount ?? ""); //undefined amount willbe tuned into empty string
+        const amountPattern = /^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/; //number format
+        const amountNumber = Number(amountText);
+
+        if (!amountPattern.test(amountText) || !Number.isFinite(amountNumber) || amountNumber <= 0 || amountNumber > 9999999999.99) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter a valid positive amount."
+            });
+        }
+
+        // validate date in YYYY-MM-DD format
+        // last comparsion is to reject impossible value
+        if (typeof date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid transaction date."
+            });
+        }
+
+        // Save transaction to the database
+        const newTransaction = await Transaction.create({
+            userId: userId,
+            type: type,
+            account: account,
+            amount: amountText,
+            category: category,
+            date: date,
+            description: description?.trim() || null //? is for .trim() not to cause an error with null value
+        });
+
+        // return success response
+        return res.status(201).json({
+            success: true,
+            message: "Transaction saved successfully.",
+            transaction: newTransaction
+        });
+
+    } catch (error) {
+        console.error("Error saving transaction:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to save transaction."
+        });
+    }
+});
+
 
 // make sure we have the tables ready before user tries to make modifications to them
 startServer();
