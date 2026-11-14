@@ -51,7 +51,9 @@ category update success
 categpry update fail
 save transaction success
 save transaction fail
-
+get balances success
+get balances fail
+display balances success
 
 Note for improvement:
 The sprint did not mention about it at all, but i believe I should add logout function since we have login. I have not implemented it yet, but I will be adding it eventually.

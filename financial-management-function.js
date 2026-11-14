@@ -62,9 +62,37 @@ async function saveTransaction(transactionData) {
     }
 }
 
-// apply the category filter and save the new transaction record
-document.addEventListener("DOMContentLoaded", () => {
+// get account balances
+async function getBalances() {
+    try {
+        const response = await fetch("http://127.0.0.1:3000/balances", {
+            method: "GET",
+            credentials: "include"
+        });
 
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Unable to get balances.");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error getting balances:", error);
+        throw error;
+    }
+}
+
+// display account balances, with 2 decimal points
+function displayBalances(balanceData) {
+    document.getElementById("bank").textContent =`Bank Savings: $${balanceData.bankBalance.toFixed(2)}`;
+    document.getElementById("cash").textContent =`Cash Savings: $${balanceData.cashBalance.toFixed(2)}`;
+    document.getElementById("account-total").textContent =`Total: $${balanceData.totalBalance.toFixed(2)}`;
+}
+
+// retrive the account balances once you open the page
+// apply the category filter and save the new transaction record. then reflect the cahnge to the webpage
+document.addEventListener("DOMContentLoaded", async () => {
     const transactionType = document.getElementById("transaction-type");
     const categorySelect = document.getElementById("category");
     const transactionForm = document.getElementById("transaction-form");
@@ -102,6 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
             transactionForm.reset();
             updateCategories("", categorySelect);
 
+            // refresh account balances
+            try {
+                const balances = await getBalances();
+                displayBalances(balances);
+            } catch (error) {
+                console.error("Unable to refresh account balances:", error);
+            }
+
             // show success message in a popup
             alert(result.message);
         } catch (error) {
@@ -109,10 +145,17 @@ document.addEventListener("DOMContentLoaded", () => {
             message.style.color = "red";
         }
     });
+    
+    // load account balances when the page first opens
+    try {
+        const balances = await getBalances();
+        displayBalances(balances);
+    } catch (error) {
+        console.error("Unable to display account balances:", error);
+    }
 });
-
 
 // export functions for unit tests
 if (typeof module !== "undefined") {
-    module.exports = {updateCategories, saveTransaction};
+    module.exports = {updateCategories, saveTransaction, getBalances, displayBalances};
 }

@@ -500,6 +500,56 @@ app.post("/transactions", requireLogin, async (req, res) => {
     }
 });
 
+// get current account balances
+app.get("/balances", async (req, res) => {
+    try {
+        // check whether user is logged in
+        const userId = req.session.userId;
+
+        // user has not logged in
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "You have to log in first."
+            });
+        }
+
+        // retrieve all the transactions for the logged-in user
+        const transactions = await Transaction.findAll({where: { userId }});
+
+        let bankBalance = 0;
+        let cashBalance = 0;
+
+        transactions.forEach(transaction => {
+            let amount = Number(transaction.amount);
+
+            // changing amount to the negative value when the type is expense
+            if (transaction.type === "expense") {
+                amount = -amount;
+            }
+
+            if (transaction.account === "bank") {
+                bankBalance += amount; //total in the bank account
+            } else if (transaction.account === "cash") {
+                cashBalance += amount; // total in cash
+            }
+        });
+
+        res.json({
+            success: true,
+            bankBalance,
+            cashBalance,
+            totalBalance: bankBalance + cashBalance // total of bank and cash
+        });
+
+    } catch (error) {
+        console.error("Error getting balances:", error);
+        res.status(500).json({
+            success: false,
+            message: "Unable to retrieve balances."
+        });
+    }
+});
 
 // make sure we have the tables ready before user tries to make modifications to them
 startServer();
