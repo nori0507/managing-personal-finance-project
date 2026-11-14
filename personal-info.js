@@ -98,6 +98,7 @@ if (personalInfoForm) {
             // display the info
             displayPersonalInfo(updatedInfo);
             document.getElementById("message").innerText = result.message;
+            personalInfoForm.reset();
         } catch (error) {
             document.getElementById("message").innerText ="Failed to update personal information.";
         }
