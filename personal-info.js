@@ -1,8 +1,12 @@
 // store functions that are related to personal info
+const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3000"
+        : "https://managing-personal-finance-project-web.onrender.com";
+
 // update personal information
 async function updatePersonalInfo(personalInfoData) {
     try {
-        const response = await fetch("http://127.0.0.1:3000/personal-info", {
+        const response = await fetch(`${API_BASE_URL}/personal-info`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +32,7 @@ async function updatePersonalInfo(personalInfoData) {
 // get the current user's personal information
 async function getPersonalInfo() {
     try {
-        const response = await fetch("http://127.0.0.1:3000/personal-info", {
+        const response = await fetch(`${API_BASE_URL}/personal-info`, {
             method: 'GET',
             credentials: 'include'
         });

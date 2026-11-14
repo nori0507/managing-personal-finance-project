@@ -1,4 +1,7 @@
-// functions that will allow the applications to proceed some features (within main page index.html)
+// functions that will allow the applications to proceed some features (within main page)
+const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3000"
+        : "https://managing-personal-finance-project-web.onrender.com";
 // Categories for income and expense
 const categories = {
     income: ["salary", "side gig", "investment", "others"],
@@ -39,7 +42,7 @@ function updateCategories(selectedType, categorySelect) {
 // save a new transaction
 async function saveTransaction(transactionData) {
     try {
-        const response = await fetch("http://127.0.0.1:3000/transactions", {
+        const response = await fetch(`${API_BASE_URL}/transactions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -65,7 +68,7 @@ async function saveTransaction(transactionData) {
 // get account balances
 async function getBalances() {
     try {
-        const response = await fetch("http://127.0.0.1:3000/balances", {
+        const response = await fetch(`${API_BASE_URL}/balances`, {
             method: "GET",
             credentials: "include"
         });

@@ -1,3 +1,7 @@
+const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3000"
+        : "https://managing-personal-finance-project-web.onrender.com";
+
 async function signup(event) {
     // stop the default browser form submission immediately
     event.preventDefault();
@@ -9,7 +13,7 @@ async function signup(event) {
     const messageElement = document.getElementById("message");
 
     try {
-        const response = await fetch("http://127.0.0.1:3000/signup", {
+        const response = await fetch(`${API_BASE_URL}/signup`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

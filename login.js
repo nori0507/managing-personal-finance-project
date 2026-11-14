@@ -1,3 +1,6 @@
+const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3000"
+        : "https://managing-personal-finance-project-web.onrender.com";
 async function login(event) {
     // prevent the form from refreshing the page
     event.preventDefault();
@@ -8,7 +11,7 @@ async function login(event) {
 
     try {
         // send login request to backend
-        const response = await fetch("http://127.0.0.1:3000/login", {
+        const response = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
