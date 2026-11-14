@@ -1,0 +1,77 @@
+<!--main page that will be shown to the users once they logged in-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Financial Management</title>
+    <script src="financial-management-function.js" defer></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main>
+        <h1>Personal Financial Management</h1>
+        <h2>Welcome to the Main Page!</h2>
+        <!--Connect to the personal infromation page, users can check and modify their personal info-->
+        <nav>
+            <h3>Personal Information</h3>
+            <p id="personal-info-nav">Click <a href="personalinfo.html">here</a> to check or modify your personal information</p>
+        </nav>
+
+        <!--related to money tracking-->
+        <article>
+            <!--showing the balance of users-->
+            <h3>Your Current Balance Status</h3>
+            <section>
+                <ul class="account-card">
+                    <p id="bank">Bank Savings</p>
+                    <p id="cash">Cash Saving</p>
+                    <p id="account-total">Total</p>
+                </ul>
+            </section>
+            <!--Function where users can input the expense and income-->
+            <section>
+                <h3>Record Your Expense and Income</h3>
+                <form id="transaction-form" class="transaction-form-format">
+                    <!--let user choose the transaction type-->
+                    <label for="transaction-type">Transaction Type:</label>
+                    <select id="transaction-type" required>
+                        <option value="">Select Type</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <!--let user choose thecategory of transaction-->
+                    <label for="category">Category:</label>
+                    <select id="category" required>
+                        <option value="">Select a transaction type first</option>
+                    </select>
+                    <!--let user chooose the account-->
+                    <label for="account">Account:</label>
+                    <select id="account" required>
+                        <option value="">Select Account</option>
+                        <option value="bank">Bank</option>
+                        <option value="cash">Cash</option>
+                    </select>
+                    <!--let user input the amount-->
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" required>
+                    <!--let user input the date-->
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" required>
+                    <!--let user input the description-->
+                    <label for="description">Description:</label>
+                    <textarea id="description"></textarea>
+                    <!--submit button for transaction enter request-->
+                    <button type="submit">Save Transaction</button>
+                    <p id="message"></p>
+                </form>
+            </section>
+        </article>
+    </main>
+    <footer>
+    <!--Leaving the contact information-->
+    <!--using placeholder link since this is a fake email address-->
+    <p id="contact-info">If you have any troubles, send email to the following address: <a href="#personal.financial.management@rize.edu">personal.financial.management@rize.edu</a></p>
+    </footer>
+</body>
+</html>

@@ -18,7 +18,8 @@ when the transaction record is updated, the account balance display will be modi
 
 architecture:
 frontend
-index.html	Main page once the user login
+mainpage.html Main page once the user login
+index.html	deployed as the first page on render, so navigate to the login page right after
 login.html	Login page 
 signup.html	Account registration page 
 personalinfo.html Personal Information page

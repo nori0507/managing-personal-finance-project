@@ -28,7 +28,7 @@ async function login(event) {
 
         if (response.ok && data.success) {
             console.log("Login successful!");
-            window.location.href = "index.html";
+            window.location.href = "mainpage.html";
             document.getElementById("message").innerText ="login success";
         } else {
             document.getElementById("message").innerText =
