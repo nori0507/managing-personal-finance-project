@@ -1,7 +1,7 @@
 // functions that will allow the applications to proceed some features (within main page)
-const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
-        ? "http://localhost:3000"
-        : "https://managing-personal-finance-project-web.onrender.com";
+const API_BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? `${window.location.protocol}//${window.location.hostname}:3000`
+    : "https://managing-personal-finance-project-web.onrender.com";
 // Categories for income and expense
 const categories = {
     income: ["salary", "side gig", "investment", "others"],

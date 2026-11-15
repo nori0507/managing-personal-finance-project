@@ -1,6 +1,6 @@
-const API_BASE_URL =["localhost", "127.0.0.1"].includes(window.location.hostname)
-        ? "http://localhost:3000"
-        : "https://managing-personal-finance-project-web.onrender.com";
+const API_BASE_URL = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? `${window.location.protocol}//${window.location.hostname}:3000`
+    : "https://managing-personal-finance-project-web.onrender.com";
 async function login(event) {
     // prevent the form from refreshing the page
     event.preventDefault();
