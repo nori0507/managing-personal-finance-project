@@ -35,7 +35,6 @@ async function getPersonalInfo() {
         const response = await fetch(`${API_BASE_URL}/personal-info`, {
             method: 'GET',
             credentials: 'include',
-            cache: "no-store"
         });
 
         const data = await response.json();
