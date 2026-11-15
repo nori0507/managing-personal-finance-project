@@ -89,7 +89,7 @@ describe("saveTransaction function", () => {
         expect(result.success).toBe(true);
         expect(result.message).toBe("Transaction saved successfully.");
         // check whether the correct data was sent
-        expect(global.fetch).toHaveBeenCalledWith("http://127.0.0.1:3000/transactions",
+        expect(global.fetch).toHaveBeenCalledWith("http://localhost:3000/transactions",
             {
                 method: "POST",
                 headers: {
@@ -140,7 +140,7 @@ describe("getBalances function", () => {
 
         expect(result).toEqual(balanceData);
         expect(global.fetch).toHaveBeenCalledWith(
-            "http://127.0.0.1:3000/balances",
+            "http://localhost:3000/balances",
             {
                 method: "GET",
                 credentials: "include"

@@ -34,7 +34,7 @@ describe("updatePersonalInfo function", () => {
 
         // check whether the correct data was sent
         expect(global.fetch).toHaveBeenCalledWith(
-            "http://127.0.0.1:3000/personal-info",
+            "http://localhost:3000/personal-info",
             {
                 method: "PUT",
                 headers: {
@@ -83,7 +83,7 @@ describe("getPersonalInfo function", () => {
 
         // check whether fetch was called correctly
         expect(global.fetch).toHaveBeenCalledWith(
-            "http://127.0.0.1:3000/personal-info",
+            "http://localhost:3000/personal-info",
             {
                 method: "GET",
                 credentials: "include"
