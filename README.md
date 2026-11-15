@@ -27,7 +27,6 @@ styles.css	Styling the UI
 login.js	Login functionality and API requests
 signup.js	Account registration functionality and API requests
 personal-info.js  Personal information functionalities and API requests
-script.js	Main page interactions and functionality
 financial-management-function.js	Reusable financions
 backend and database
 api-service.js	Node.js and Express.js, handle api with data in the database
@@ -59,5 +58,6 @@ display balances success
 Note for improvement:
 The sprint did not mention about it at all, but i believe I should add logout function since we have login. I have not implemented it yet, but I will be adding it eventually.
 I have to adjust the layout for the smaller windows.
+personalinfo.html should have the navigation link to go back to the mainpage.html
 
 Feature improvement required based on sprint2:
