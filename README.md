@@ -1,63 +1,124 @@
 # managing-personal-finance-project
 This application will help user managing their personal finance.
-The application solves the problem that many students and young adults face regarding their financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem, I can demonstrate both my technical and business skills.
-Through this project, I will be using skills such as HTML, CSS, and JavaScript for the frontend, Node.js and Express for the backend, and Sequelize for database management. 
+The application solves the problem that many students and young adults face regarding their personal financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem
 
-to start the server, put 
-node api-server.js
-on the command screen
+**Note**
+- Logout has not implemented yet.
+- Layout adjustment for the smaller window has not implemented yet.
+- The application currently uses SQLite on Render's free subscription plan, which does not provide persistent disk storage. As a result, user accounts and financial data may be lost when the service spins down after inactivity, or is redeployed. Users may need to register again and re-enter their information. However, while the service is running and the database remains available, all implemented features function as expected.
+- Unit tests use mocks.
+- Capable of implementing observer design pattern. (when the account is created, the personal info for that account will be created. when the personal info within the table is modified, the userinterface will be modified according to it. when the transaction record is updated, the account balance display will be modified)
 
-Architectural Decision: 
-MVC:
-The application uses Express.js on the backend to serve data dynamically via API endpoints, eliminating the need to hardcode content. JavaScript manages our core application logic—allowing us to write and test modular functions—while dynamically updating the UI for a seamless user experience. This separation of data, logic, and presentation reduces complexity and improves developer productivity.
-Observer: 
-when the account is created, the personal info for that account will be created
-when the personal info within the table is modified, the userinterface will be modified according to it
-when the transaction record is updated, the account balance display will be modified
+## Live Application
+- Frontend(deployed website): https://managing-personal-finance-project.onrender.com
+- Backend: https://managing-personal-finance-project-web.onrender.com
+- Github: https://github.com/nori0507/managing-personal-finance-project
+
+## Features and Usage Examples
+- Sign up: Open the signup page, enter an email and password, and create an account. 
+- Login: Enter registered credentials on the login page to access the main page of application. 
+- Manage personal information: View and edit your personal information. 
+- Record transactions: Enter the transaction details to update the transaction record table. 
+- View balances: Calculate the balabces in each bank and cash accont and display them. 
+
+## Local Set Up
+### Prerequisites
+Install Node.js, npm, Git, and a code editor such as VS Code(This instructionis using the VS Code).
+
+### 1. Clone the repository to your computer and open the project throught the path.
+### 2. Configure environment variables
+Create a `.env` file in the project root:
+```
+NODE_ENV=development
+FRONTEND_URL=http://127.0.0.1:5500
+SESSION_SECRET=replace-with-a-long-random-secret
+```
+
+### 3. Start the backend
+```
+node api-service.js
+```
+### 4. Start the frontend
+Open `index.html` with VS Code Live Server. The page will be redirected to the login page right after.
 
 
-architecture:
-frontend
-mainpage.html Main page once the user login
-index.html	deployed as the first page on render, so navigate to the login page right after
-login.html	Login page 
-signup.html	Account registration page 
-personalinfo.html Personal Information page
-styles.css	Styling the UI
-login.js	Login functionality and API requests
-signup.js	Account registration functionality and API requests
-personal-info.js  Personal information functionalities and API requests
-financial-management-function.js	Reusable financions
-backend and database
-api-service.js	Node.js and Express.js, handle api with data in the database
-database.sqlite	SQLite database that store user's data
-package.json	Project dependencies and scripts
-package-lock.json	Records exact dependency versions
-_test_  test for the functions 
-jest.config.js  Required to execute the npm test
+### Troubleshooting
+- `node api-service.js` does not start: Confirm `npm install` completed, `.env` exists, and port 3000 is available. 
+- Frontend requests fail: Confirm the backend is running, the API base URL is correct, and `FRONTEND_URL` exactly matches the browser's frontend origin. 
 
+## Technology Used in the Application
+- Frontend: HTML, CSS, JavaScript -- Pages, interactions, and API requests 
+- Backend: Node.js, Express -- API endpoints and server logic 
+- Database: SQLite, Sequelize -- Data storage and Database construction 
+- Authentication: bcryptjs, express-session -- Password hashing and session-based login 
+- Testing: Jest -- Unit tests 
+- CI: GitHub Actions -- Run automated tests on pushes and pull requests 
+- Hosting: Render -- frontend(static) and backend(web service) 
 
-test:
-login success 
-login failure 
-sign up success 
-sign up failure 
-update personal info success
-update personal info fail
-get personal info success
-get personal info fail
-dislpay personal info success
-category update success
-categpry update fail
-save transaction success
-save transaction fail
-get balances success
-get balances fail
-display balances success
+## Project Structure
+```
+managing-personal-finance-project/
+|-- index.html                         # Deployed entry page, redirect itself tothe login.html
+|-- mainpage.html                      # Main page after login
+|-- login.html                         # Login page
+|-- signup.html                        # Registration page
+|-- personalinfo.html                  # Personal information page
+|-- styles.css                         # Frontend styling
+|-- login.js                            # Login interactions and API calls
+|-- signup.js                           # Registration interactions and API calls
+|-- personal-info.js                    # Personal information logic
+|-- financial-management-function.js    # Financial management (main page) logic
+|-- api-service.js                      # Express backend and database API
+|-- __test__/                           # Jest tests
+|-- jest.config.js                      # Jest configuration
+|-- package.json                        # Dependencies and npm scripts
+|-- package-lock.json                   # Locked dependency versions
+|-- .github/workflows/ci.yml           # CI workflow
+|-- .gitignore                          # Spacify the file that should not be commited to the github
+```
+`database.sqlite` and `.env` is created or used locally by the application and should not be committed to GitHub.
 
-Note for improvement:
-The sprint did not mention about it at all, but i believe I should add logout function since we have login. I have not implemented it yet, but I will be adding it eventually.
-I have to adjust the layout for the smaller windows.
-personalinfo.html should have the navigation link to go back to the mainpage.html
+## Design Pattern
+The application follows an **MVC** design pattern
 
-Feature improvement required based on sprint2:
+- Model: Sequelize models represent users, personal information, and financial data and interact with SQLite.
+- View: HTML and CSS render the interface; frontend JavaScript updates displayed content.
+- Controller: Express route handlers validate and process API requests, interact with models, and return responses. Frontend JavaScript handles form events and communicates with the API.
+
+This separation makes the interface, data access, and business logic easier to understand and test. 
+
+## Technical Decisions
+- Express API: Separates front end and backend so that browser does not access tp thedatabase directly.
+- Sequelize + SQLite: Simplifies local development; However, SQLite is not ideal for persistence when it comes to deployment 
+- Session-based authentication: Backend can identify the logged-in user and return only the records associated with that user's account
+- Environment-specific configuration: Allows the use of the same application code in both environments(local and Render) without manually rewriting URLs and cookie settings.
+
+## Unit tests
+Run the unit tests locally:
+```
+npm test
+```
+The Jest suite covers successful and unsuccessful login, signup, personal information updates and retrieval, category updates, transaction saving, balance retrieval, and display-related behavior.
+
+Tests mock API responses and check expected function behavior. Passing unit tests does not prove that the deployed frontend, backend, database, and cookies work together; manual end-to-end verification is also necessary.
+
+## Screenshots
+### Login page
+![Login page showing the email and password form](screenshots/login.png)
+
+### Signup page
+![Signup page showing account registration](screenshots/signup.png)
+
+### Main page
+![Main page showing account balances](screenshots/account_balances.png)
+![Main page showing transaction record form](screenshots/transaction_record_form.png)
+
+### Personal information page
+
+![Personal information page showing personal information](screenshots/personal_info_display.png)
+![Personal information page showing personal information update form](screenshots/personal_update_form.png)
+
+## Deployment
+The frontend is deployed as a Render Static Site and the Express backend as a Render Web Service. The deployed frontend calls the deployed backend API over HTTPS.
+
+Production environment settings includes `SESSION_SECRET`, `FRONTEND_URL`, `NODE_ENV=production`. `FRONTEND_URL` will be different for frontend and backend. For the Static Site(frontend), you can use the value that is in your local .env file while you have to use the Static Site render URL for the Web Service's(backend) `FRONTEND_URL` variable.
