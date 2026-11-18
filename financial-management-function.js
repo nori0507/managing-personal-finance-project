@@ -93,6 +93,109 @@ function displayBalances(balanceData) {
     document.getElementById("account-total").textContent =`Total: $${balanceData.totalBalance.toFixed(2)}`;
 }
 
+// get value for transactipn record search filters
+function getTransactionSearchFilters() {
+    const type = document.getElementById("search-transaction-type").value;
+    const category = document.getElementById("search-category").value;
+    const startDate = document.getElementById("search-start-date").value;
+    const endDate = document.getElementById("search-end-date").value;
+    const minAmount = document.getElementById("search-min-amount").value;
+    const maxAmount = document.getElementById("search-max-amount").value;
+
+    // transaction type is required
+    if (!type) {
+        throw new Error("Please select a transaction type.");
+    }
+
+    // validate date range
+    // throw error when we have value for both end and start date, and start date is later than the end date
+    if (startDate && endDate && startDate > endDate) {
+        throw new Error("Start date cannot be later than end date.");
+    }
+
+    // validate amount range
+    // throw an error when we have both max and min amount, and min amount is bigger than the max amount
+    if (minAmount !== "" && maxAmount !== "" &&
+        Number(minAmount) > Number(maxAmount)) {
+        throw new Error("Minimum amount cannot exceed maximum amount.");
+    }
+
+    return {type,category,startDate,endDate,minAmount,maxAmount};
+}
+
+// finction for searching the transaction
+async function searchTransactions() {
+    const message = document.getElementById("search-message");
+    try {
+        const filters = getTransactionSearchFilters();
+        // values go after "search?"
+        const params = new URLSearchParams();
+
+        // when the value for the fileter is not empty, fill the array
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== "") {params.append(key, value);}
+        });
+
+        const response = await fetch(
+            `${API_BASE_URL}/transactions/search?${params.toString()}`, 
+            {
+                method: "GET",
+                credentials: "include",
+                cache: "no-store"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to search transactions.");
+        }
+
+        displayTransactionSearchResults(data.transactions);
+
+        // showing how many transactions were found
+        message.textContent = `${data.transactions.length} transaction(s) found.`;
+
+    } catch (error) {
+        message.textContent = error.message;
+        // remove anything from the search result box
+        document.getElementById("transaction-search-results-body").replaceChildren();
+    }
+}
+
+// function display the filtered search result
+function displayTransactionSearchResults(transactions) {
+    const tableBody = document.getElementById(
+        "transaction-search-results-body"
+    );
+
+    // remove previous results
+    tableBody.replaceChildren();
+
+    // creating each rows within the tabele
+    transactions.forEach(transaction => {
+        const row = document.createElement("tr");
+        const values = [
+            transaction.date,
+            transaction.type,
+            transaction.category,
+            transaction.account,
+            Number(transaction.amount).toFixed(2),
+            transaction.description || ""
+        ];
+    
+        // create a cell for each value and append each of them to create a complete row
+        values.forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        // add the row to the table
+        tableBody.appendChild(row);
+    });
+}
+
 // retrive the account balances once you open the page
 // apply the category filter and save the new transaction record. then reflect the cahnge to the webpage
 document.addEventListener("DOMContentLoaded", async () => {
@@ -158,7 +261,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+// event listeners related to searching functions
+const searchForm = document.getElementById("transaction-search-form");
+const searchType = document.getElementById("search-transaction-type");
+const searchCategory = document.getElementById("search-category");
+
+// change the category according to the transaction type
+searchType.addEventListener("change", () => {
+    updateCategories(searchType.value, searchCategory);
+});
+
+// search the record once the submit buttom is pressed
+searchForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await searchTransactions();
+});
+
+// reset the search result 
+searchForm.addEventListener("reset", () => {
+    // reset the category dropdown
+    updateCategories("", searchCategory);
+
+    // clear the search message
+    document.getElementById("search-message").textContent = "";
+
+    // clear the displayed search results
+    document.getElementById("transaction-search-results-body").replaceChildren();
+});
+
 // export functions for unit tests
 if (typeof module !== "undefined") {
-    module.exports = {updateCategories, saveTransaction, getBalances, displayBalances};
+    module.exports = {updateCategories, saveTransaction, getBalances, displayBalances, 
+        getTransactionSearchFilters, searchTransactions, displayTransactionSearchResults};
 }

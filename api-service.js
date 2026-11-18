@@ -5,7 +5,7 @@ const session = require("express-session"); //to identify login session id
 
 const express = require("express");
 const cors = require("cors");
-const { Sequelize, DataTypes } = require("sequelize");//to store data
+const { Sequelize, DataTypes, Op } = require("sequelize");//to store data
 const bcrypt = require("bcryptjs");//to hash the password
 
 const app = express();
@@ -549,6 +549,116 @@ app.get("/balances", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Unable to retrieve balances."
+        });
+    }
+});
+
+// search transaction records for the logged-in user
+app.get("/transactions/search", requireLogin, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        // get filters from the URL query parameters
+        const {type,category,startDate,endDate,minAmount,maxAmount} = req.query;
+
+        // validate transaction type according to the transaction type
+        const validCategories = {
+            income: ["salary", "side gig", "investment", "others"],
+            expense: ["housing", "utilities", "groceries", "dining out", "transportation", "shopping", "health", "hobby", "others"]
+        };
+
+        // throw error if the invalid(non-existing) transaction type sent
+        if (!validCategories[type]) {
+            return res.status(400).json({
+                success: false,
+                message: "Please select a valid transaction type."
+            });
+        }
+
+        // throw error id the category is not under the selected type
+        if (category && !validCategories[type].includes(category)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid category for the selected type."
+            });
+        }
+
+        // validate date inputs
+        function isValidDate(value) {
+            return (
+                typeof value === "string" &&
+                /^\d{4}-\d{2}-\d{2}$/.test(value) &&
+                !Number.isNaN(Date.parse(value)) && // check if JavaScript can parse the date
+                new Date(value).toISOString().slice(0, 10) === value //check if the date exist
+            );
+        }
+
+        // validate amount inputs
+        const validAmount = (value) =>
+            typeof value === "string" &&
+            value.trim() !== "" && // check if it is not empty
+            Number.isFinite(Number(value)) &&
+            Number(value) >= 0 &&
+            Number(value) <= 9999999999.99;
+
+        if ((minAmount !== undefined && !validAmount(minAmount)) ||
+            (maxAmount !== undefined && !validAmount(maxAmount)) ||
+            (minAmount !== undefined && maxAmount !== undefined && Number(minAmount) > Number(maxAmount))) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid amount range."
+            });
+        }
+
+        // build Sequelize search conditions
+        const where = {userId: userId, type: type};
+
+        // optional category filter
+        if (category) {
+            where.category = category;
+        }
+
+        // Optional date filters
+        if (startDate || endDate) {
+            where.date = {};
+
+            if (startDate) {
+                where.date[Op.gte] = startDate;
+            }
+            if (endDate) {
+                where.date[Op.lte] = endDate;
+            }
+        }
+
+        // optional amount filters
+        if (minAmount !== undefined || maxAmount !== undefined) {
+            where.amount = {};
+
+            if (minAmount !== undefined) {
+                where.amount[Op.gte] = Number(minAmount);
+            }
+            if (maxAmount !== undefined) {
+                where.amount[Op.lte] = Number(maxAmount);
+            }
+        }
+
+        // Retrieve matching transactions
+        const transactions = await Transaction.findAll({
+            where: where, // where has all the conditiond that the user entered
+            order: [["date", "DESC"], ["id", "DESC"]]
+        });
+
+        // success
+        return res.status(200).json({
+            success: true,
+            transactions: transactions
+        });
+
+    } catch (error) {
+        console.error("Error searching transactions:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Unable to search transactions."
         });
     }
 });

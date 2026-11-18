@@ -42,7 +42,7 @@
                     </select>
                     <!--let user choose thecategory of transaction-->
                     <label for="category">Category:</label>
-                    <select id="category" required>
+                    <select id="category">
                         <option value="">Select a transaction type first</option>
                     </select>
                     <!--let user chooose the account-->
@@ -65,6 +65,55 @@
                     <button type="submit">Save Transaction</button>
                     <p id="message"></p>
                 </form>
+            </section>
+            <!--Transaction record search-->
+            <section>
+                <h3>Transaction Record Search</h3>
+                <form id="transaction-search-form">
+                    <!-- filter by transaction type -->
+                    <label for="search-transaction-type">Transaction Type:</label>
+                    <select id="search-transaction-type" required>
+                        <option value="">Select Types</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <!-- filter by category (categories depend on the transaction type)-->
+                    <label for="search-category">Category:</label>
+                    <select id="search-category">
+                        <option value="">Select the transaction type first</option>
+                    </select>
+                    <!-- filter by date range -->
+                    <label for="search-start-date">Start Date:</label>
+                    <input type="date" id="search-start-date">
+                    <label for="search-end-date">End Date:</label>
+                    <input type="date" id="search-end-date">
+                    <!-- filter by amount range -->
+                    <label for="search-min-amount">Minimum Amount:</label>
+                    <input type="number" id="search-min-amount" min="0" step="0.01">
+                    <label for="search-max-amount">Maximum Amount:</label>
+                    <input type="number" id="search-max-amount" min="0" step="0.01">
+                    <!-- search and reset buttons -->
+                    <button type="submit">Search Transactions</button>
+                    <button type="reset">Clear Filters</button>
+                </form>
+                <!-- search results -->
+                <h4>Search Results</h4>
+                <p id="search-message" role="status"></p>
+                <table id="transaction-search-results">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Account</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-search-results-body">
+                        <!-- Matching transactions will appear here -->
+                    </tbody>
+                </table>
             </section>
         </article>
     </main>
