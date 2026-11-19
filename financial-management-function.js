@@ -154,7 +154,7 @@ async function searchTransactions() {
         displayTransactionSearchResults(data.transactions);
 
         // showing how many transactions were found
-        message.textContent = `${data.transactions.length} transaction(s) found.`;
+        message.textContent = `${data.transactions.length} transaction found.`;
 
     } catch (error) {
         message.textContent = error.message;
@@ -262,31 +262,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // event listeners related to searching functions
-const searchForm = document.getElementById("transaction-search-form");
-const searchType = document.getElementById("search-transaction-type");
-const searchCategory = document.getElementById("search-category");
+document.addEventListener("DOMContentLoaded", async () => {
+    const searchForm = document.getElementById("transaction-search-form");
+    const searchType = document.getElementById("search-transaction-type");
+    const searchCategory = document.getElementById("search-category");
 
-// change the category according to the transaction type
-searchType.addEventListener("change", () => {
-    updateCategories(searchType.value, searchCategory);
-});
+    // change the category according to the transaction type
+    searchType.addEventListener("change", () => {
+        updateCategories(searchType.value, searchCategory);
+    });
 
-// search the record once the submit buttom is pressed
-searchForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    await searchTransactions();
-});
+    // search the record once the submit buttom is pressed
+    searchForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        await searchTransactions();
+    });
 
-// reset the search result 
-searchForm.addEventListener("reset", () => {
-    // reset the category dropdown
-    updateCategories("", searchCategory);
+    // reset the search result 
+    searchForm.addEventListener("reset", () => {
+        // reset the category dropdown
+        updateCategories("", searchCategory);
 
-    // clear the search message
-    document.getElementById("search-message").textContent = "";
+        // clear the search message
+        document.getElementById("search-message").textContent = "";
 
-    // clear the displayed search results
-    document.getElementById("transaction-search-results-body").replaceChildren();
+        // clear the displayed search results
+        document.getElementById("transaction-search-results-body").replaceChildren();
+    });
 });
 
 // export functions for unit tests
