@@ -16,7 +16,7 @@ h2{
     font-size: 40px;
 }
 
-h3{
+h3, h4{
     text-align:center;
     background-color: transparent;
     font-size: 30px;
@@ -95,6 +95,32 @@ p, label{
 
 #to-mainpage{
     font-size: 15px;
+    text-align: center;
+}
+
+.transaction-search-format{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+#transaction-search-results {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 80px;
+    border: 4px double;
+}
+
+#transaction-search-results th, #transaction-search-results td {
+    padding: 12px 15px;
+    text-align: left;
+    background-color: aliceblue;
+    border-bottom: 1px solid grey;
+}
+
+#search-message{
     text-align: center;
 }
 /*adjust to small windows*/

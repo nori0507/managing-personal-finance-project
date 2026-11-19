@@ -3,6 +3,7 @@ This application will help user managing their personal finance.
 The application solves the problem that many students and young adults face regarding their personal financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem
 
 **Note**
+- **Transaction record searching function in the process of implementation**
 - Logout has not implemented yet.
 - Layout adjustment for the smaller window has not implemented yet.
 - The application currently uses SQLite on Render's free subscription plan, which does not provide persistent disk storage. As a result, user accounts and financial data may be lost when the service spins down after inactivity, or is redeployed. Users may need to register again and re-enter their information. However, while the service is running and the database remains available, all implemented features function as expected.
@@ -20,6 +21,7 @@ The application solves the problem that many students and young adults face rega
 - Manage personal information: View and edit your personal information. 
 - Record transactions: Enter the transaction details to update the transaction record table. 
 - View balances: Calculate the balabces in each bank and cash accont and display them. 
+- Transaction Record Search: You can use filters to search your transaction history
 
 ## Local Set Up
 ### Prerequisites
