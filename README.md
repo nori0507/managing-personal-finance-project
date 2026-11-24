@@ -3,12 +3,10 @@ This application will help user managing their personal finance.
 The application solves the problem that many students and young adults face regarding their personal financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem
 
 **Note**
-- **Transaction record searching function in the process of implementation**
 - Logout has not implemented yet.
 - Layout adjustment for the smaller window has not implemented yet.
 - The application currently uses SQLite on Render's free subscription plan, which does not provide persistent disk storage. As a result, user accounts and financial data may be lost when the service spins down after inactivity, or is redeployed. Users may need to register again and re-enter their information. However, while the service is running and the database remains available, all implemented features function as expected.
 - Unit tests use mocks.
-- Capable of implementing observer design pattern. (when the account is created, the personal info for that account will be created. when the personal info within the table is modified, the userinterface will be modified according to it. when the transaction record is updated, the account balance display will be modified)
 
 ## Live Application
 - Frontend(deployed website): https://managing-personal-finance-project.onrender.com
@@ -22,6 +20,7 @@ The application solves the problem that many students and young adults face rega
 - Record transactions: Enter the transaction details to update the transaction record table. 
 - View balances: Calculate the balabces in each bank and cash accont and display them. 
 - Transaction Record Search: You can use filters to search your transaction history
+- Saving goals: Users can create saving goals and the progress and goal details willbe displayed.
 
 ## Local Set Up
 ### Prerequisites
@@ -89,6 +88,14 @@ The application follows an **MVC** design pattern
 
 This separation makes the interface, data access, and business logic easier to understand and test. 
 
+The application also utilized the **Observer** design pattern for the following:
+
+The Observer Design Pattern was implemented to automatically update multiple components of the personal financial management application whenever a new transaction is recorded.
+- Subject: TransactionSystem class
+- Observer: BalanceObserver and SavingGoalObserver classes
+
+When a user successfully records a transaction, the subject calls the notify() method, which informs all registered observers. Each observer then executes its own update() method. The BalanceObserver retrieves and displays the updated account balances, while the SavingGoalObserver retrieves and displays the updated savings goal information.
+
 ## Technical Decisions
 - Express API: Separates front end and backend so that browser does not access tp thedatabase directly.
 - Sequelize + SQLite: Simplifies local development; However, SQLite is not ideal for persistence when it comes to deployment 
@@ -116,9 +123,15 @@ Tests mock API responses and check expected function behavior. Passing unit test
 ![Main page showing transaction record form](screenshots/transaction_record_form.png)
 
 ### Personal information page
-
 ![Personal information page showing personal information](screenshots/personal_info_display.png)
 ![Personal information page showing personal information update form](screenshots/personal_update_form.png)
+
+### Transaction Search
+![Main page showing Transaction Seach](screenshots/transaction1.png)
+![Main page showing Transaction Seach](screenshots/transaction2.png)
+
+### Saving Goals
+![Main page showing saving goals](screenshots/saving_goals.png)
 
 ## Deployment
 The frontend is deployed as a Render Static Site and the Express backend as a Render Web Service. The deployed frontend calls the deployed backend API over HTTPS.
