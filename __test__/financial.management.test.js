@@ -1,6 +1,6 @@
 // test file for the financial management function
 const { updateCategories, saveTransaction, getBalances, displayBalances, getTransactionSearchFilters, 
-    searchTransactions, displayTransactionSearchResults } = require("../financial-management-function.js"); 
+    searchTransactions, displayTransactionSearchResults, saveSavingGoal, getSavingGoals, displaySavingGoals } = require("../financial-management-function.js"); 
 
 // test for updateCategories function
 describe("updateCategories function", () => {
@@ -410,3 +410,207 @@ describe("displayTransactionSearchResults function", () => {
         expect(cells[5].textContent).toBe("Bought beef");
     });
 });
+
+// test for save saving goals function
+describe("saveSavingGoal function", () => {
+
+    // fake fetch
+    beforeEach(() => {
+        global.fetch = jest.fn();
+    });
+
+    // success case
+    test("saving goal should succeed", async () => {
+
+        //fake data
+        const goalData = {
+            name: "Vacation",
+            goalAmount: 1000,
+            targetDate: "2027-05-20"
+        };
+
+        const responseData = {
+            success: true,
+            message: "Savings goal created successfully!"
+        };
+
+        // mock a successful backend response
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => responseData
+        });
+
+        const result = await saveSavingGoal(goalData);
+
+        // check the returned result
+        expect(result).toEqual(responseData);
+
+        // check whether the correct request was sent
+        expect(global.fetch).toHaveBeenCalledWith(
+            "http://localhost:3000/saving-goals",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(goalData)
+            }
+        );
+    });
+
+    // failed - the creation of the saving goal data failed because of the invalid input
+    test("saving goal should fail", async () => {
+        const goalData = {
+            name: "Vacation",
+            goalAmount: -100,
+            targetDate: "2027-05-20"
+        };
+
+        // mock an unsuccessful backend response
+        global.fetch.mockResolvedValueOnce({
+            ok: false,
+            json: async () => ({
+                success: false,
+                message: "Invalid goal amount."
+            })
+        });
+
+        // check if the function returns an error
+        await expect(saveSavingGoal(goalData)).rejects.toThrow("Invalid goal amount.");
+    });
+});
+
+// test for the functiongetting the saving goals
+describe("getSavingGoals function", () => {
+    beforeEach(() => {
+        global.fetch = jest.fn();
+    });
+
+    // success case
+    test("getting saving goals should succeed", async () => {
+
+        // fake data
+        const goalData = [
+            {
+                id: 1,
+                name: "travel",
+                goalAmount: 1000,
+                targetDate: "2027-05-20",
+                allocatedSavings: 400,
+                remaining: 600,
+                progress: 40
+            },
+            {
+                id: 2,
+                name: "car",
+                goalAmount: 5000,
+                targetDate: "2027-12-20",
+                allocatedSavings: 0,
+                remaining: 5000,
+                progress: 0
+            }
+        ];
+
+        // mock a successful backend response
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                success: true,
+                totalSavings: 400,
+                goals: goalData
+            })
+        });
+
+        const result = await getSavingGoals();
+
+        // check whether the correct goals were returned
+        expect(result).toEqual(goalData);
+
+        // check whether the correct request was sent
+        expect(global.fetch).toHaveBeenCalledWith(
+            "http://localhost:3000/saving-goals",
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
+    });
+
+    // failed to get data
+    test("getting saving goals should fail", async () => {
+
+        global.fetch.mockResolvedValueOnce({
+            ok: false,
+            json: async () => ({
+                success: false,
+                message: "Unable to retrieve savings goals."
+            })
+        });
+
+        await expect(getSavingGoals()).rejects.toThrow("Unable to retrieve savings goals.");
+    });
+
+    // success return when there is no existing goals
+    test("should return an empty array when no goals exist", async () => {
+
+        global.fetch.mockResolvedValueOnce({
+            ok: true,
+            json: async () => ({
+                success: true,
+                totalSavings: 0,
+                goals: []
+            })
+        });
+
+        const result = await getSavingGoals();
+        expect(result).toEqual([]);
+    });
+});
+
+/// test for displaing save goal function
+describe("displaySavingGoals function", () => {
+    beforeEach(() => {
+        document.body.innerHTML = `
+            <ul id="saving-goal-cards"></ul>
+        `;
+    });
+
+    // success
+    test("should display a saving goal correctly", () => {
+
+        // fake data
+        const goalData = [
+            {
+                id: 1,
+                name: "trip",
+                goalAmount: 1000,
+                targetDate: "2027-05-20",
+                allocatedSavings: 400
+            }
+        ];
+
+        // execute the function
+        displaySavingGoals(goalData);
+
+        // retrieve the generated HTML elements
+        const cards = document.querySelectorAll(".saving-goal-card");
+
+        // check the number of cards
+        expect(cards.length).toBe(1);
+
+        // check the displayed information within the card
+        expect(cards[0].textContent).toContain("trip");
+        expect(cards[0].textContent).toContain("2027-05-20");
+        expect(cards[0].textContent).toContain("Goal Amount: $1000.00");
+        expect(cards[0].textContent).toContain("Total Savings: $400.00");
+        expect(cards[0].textContent).toContain("Remaining: $600.00");
+        expect(cards[0].textContent).toContain("Progress: 40.0%");
+    });
+
+});
+
+
+
+
+
