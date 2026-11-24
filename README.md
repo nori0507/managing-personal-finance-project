@@ -3,7 +3,6 @@ This application will help user managing their personal finance.
 The application solves the problem that many students and young adults face regarding their personal financial management. By building a complete system from user authentication to financial tracking to solve a real-world problem
 
 **Note**
-- Logout has not implemented yet.
 - Layout adjustment for the smaller window has not implemented yet.
 - The application currently uses SQLite on Render's free subscription plan, which does not provide persistent disk storage. As a result, user accounts and financial data may be lost when the service spins down after inactivity, or is redeployed. Users may need to register again and re-enter their information. However, while the service is running and the database remains available, all implemented features function as expected.
 - Unit tests use mocks.
@@ -16,6 +15,7 @@ The application solves the problem that many students and young adults face rega
 ## Features and Usage Examples
 - Sign up: Open the signup page, enter an email and password, and create an account. 
 - Login: Enter registered credentials on the login page to access the main page of application. 
+- Logout: Let the users logout from the website when the logout button is clicked
 - Manage personal information: View and edit your personal information. 
 - Record transactions: Enter the transaction details to update the transaction record table. 
 - View balances: Calculate the balabces in each bank and cash accont and display them. 
@@ -114,6 +114,9 @@ Tests mock API responses and check expected function behavior. Passing unit test
 ## Screenshots
 ### Login page
 ![Login page showing the email and password form](screenshots/login.png)
+
+### Logout
+![main and personal info page showing the Logout button](screenshots/logout.png)
 
 ### Signup page
 ![Signup page showing account registration](screenshots/signup.png)

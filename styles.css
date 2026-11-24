@@ -141,4 +141,12 @@ p, label{
     background-color: aliceblue;
 }
 
+#logout-button{
+    display: block;
+    margin: 0 auto;
+}
+
+#logout-message{
+    text-align: center;
+}
 /*adjust to small windows*/
