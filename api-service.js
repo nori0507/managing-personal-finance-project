@@ -847,5 +847,27 @@ app.get("/saving-goals", requireLogin, async (req, res) => {
     }
 });
 
+// logout function
+app.post("/logout", (req, res) => {
+    // destroy the current user session
+    req.session.destroy((error) => {
+        if (error) {
+            console.error("Logout error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Failed to log out."
+            });
+        }
+
+        // remove the session cookie from the browser
+        res.clearCookie("connect.sid");
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully!"
+        });
+    });
+});
+
 // make sure we have the tables ready before user tries to make modifications to them
 startServer();
