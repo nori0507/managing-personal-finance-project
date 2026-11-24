@@ -178,6 +178,37 @@ Transaction.belongsTo(User, {
     foreignKey: "userId"
 });
 
+// saving goal model
+const SavingGoal = sequelize.define("SavingGoal", {
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    goalAmount: {
+        type: DataTypes.DECIMAL(12, 2),
+        allowNull: false
+    },
+    targetDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false
+    }
+});
+
+// One user can have multiple saving goals
+User.hasMany(SavingGoal, {
+    foreignKey: "userId",
+    onDelete: "CASCADE"
+});
+
+// Each saving goal belongs to one user
+SavingGoal.belongsTo(User, {
+    foreignKey: "userId"
+});
+
 // signup, adding an account. it also creates an associated personal information record because they relate each other by userid
 app.post("/signup", async (req, res) => {
     try {
@@ -659,6 +690,159 @@ app.get("/transactions/search", requireLogin, async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Unable to search transactions."
+        });
+    }
+});
+
+
+// create a new savings goal for the logged-in user.
+app.post("/saving-goals", requireLogin, async (req, res) => {
+    try {
+        // identify the logged-in user
+        const userId = req.session.userId;
+
+        // retrieve data from the frontend
+        const { name, goalAmount, targetDate } = req.body;
+
+        // validate the goal name
+        if (typeof name !== "string" || !name.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid goal name."
+            });
+        }
+
+        // validate the goal amount
+        if (
+            goalAmount === null ||
+            goalAmount === undefined ||
+            goalAmount === "" ||
+            !Number.isFinite(Number(goalAmount)) ||
+            Number(goalAmount) <= 0
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Goal amount must be greater than zero."
+            });
+        }
+
+        // validate the target date
+        if (
+            typeof targetDate !== "string" ||
+            !/^\d{4}-\d{2}-\d{2}$/.test(targetDate) ||
+            !Number.isFinite(Date.parse(targetDate)) ||
+            new Date(targetDate).toISOString().slice(0, 10) !== targetDate
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid target date."
+            });
+        }
+
+        // create the savings goal in SQLite
+        const newGoal = await SavingGoal.create({
+            userId,
+            name: name.trim(),
+            goalAmount: Number(goalAmount),
+            targetDate
+        });
+
+        // return the newly created goal
+        return res.status(201).json({
+            success: true,
+            message: "Savings goal created successfully!",
+            goal: newGoal
+        });
+
+    } catch (error) {
+        console.error("Error creating savings goal:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to create savings goal."
+        });
+    }
+});
+
+// allocating savings to the goals based on the target date
+function allocateSavingsToGoals(goals, totalSavings) {
+
+    // savings available for allocation
+    let availableSavings = Math.max(0, Number(totalSavings));
+
+    // sort goals by their deadlines (earliest first)
+    const sortedGoals = [...goals].sort(
+        function(a, b) {
+            return a.targetDate.localeCompare(b.targetDate) || a.id - b.id;
+        }
+    )
+
+    // calculate progress for each goal
+    return sortedGoals.map(goal => {
+        const goalAmount = Number(goal.goalAmount);
+
+        // allocate savings without exceeding the goal
+        const allocatedSavings = Math.min(availableSavings, goalAmount);
+
+        // update remaining available savings
+        availableSavings -= allocatedSavings;
+
+        // calculate remaining amount
+        const remaining = goalAmount - allocatedSavings;
+
+        // calculate progress percentage
+        const progress = (allocatedSavings / goalAmount) * 100;
+
+        return {
+            ...goal,
+            allocatedSavings,
+            remaining,
+            progress
+        };
+    });
+}
+
+ // retrieve savings goals and calculate their allocations.
+app.get("/saving-goals", requireLogin, async (req, res) => {
+    try {
+        // identify the logged-in user
+        const userId = req.session.userId;
+
+        // get the user's savings goals
+        const goals = await SavingGoal.findAll({where: { userId }, raw: true});
+
+        // get the user's transactions
+        const transactions = await Transaction.findAll({where: { userId }});
+
+        // calculate available savings from transactions
+        let totalSavings = 0;
+        transactions.forEach(transaction => {
+            const amount = Number(transaction.amount);
+
+            if (transaction.type === "income") {
+                totalSavings += amount;
+            } else if (transaction.type === "expense") {
+                totalSavings -= amount;
+            }
+        });
+        // nonnegative available savings
+        totalSavings = Math.max(0, totalSavings);
+
+        // execute the allocate function
+        const allocatedGoals = allocateSavingsToGoals(goals, totalSavings);
+
+        return res.status(200).json({
+            success: true,
+            totalSavings,
+            goals: allocatedGoals
+        });
+
+    } catch (error) {
+        console.error("Error retrieving savings goals:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to retrieve savings goals."
         });
     }
 });

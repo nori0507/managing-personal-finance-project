@@ -196,6 +196,173 @@ function displayTransactionSearchResults(transactions) {
     });
 }
 
+ // send a new savings goal to the backend to create the saving goal
+async function saveSavingGoal(goalData) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/saving-goals`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(goalData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Failed to create savings goal."
+            );
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error saving savings goal:", error);
+        throw error;
+    }
+}
+
+ // retrieve savings goals with their calculated allocations.
+async function getSavingGoals() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/saving-goals`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to retrieve savings goals.");
+        }
+
+        return data.goals;
+
+    } catch (error) {
+        console.error("Error retrieving savings goals:", error);
+        throw error;
+    }
+}
+
+// function to display the saving goals
+function displaySavingGoals(goals) {
+    const goalContainer = document.getElementById("saving-goal-cards");
+
+    goalContainer.replaceChildren();
+
+    goals.forEach(goal => {
+        const goalAmount = Number(goal.goalAmount);
+        const totalSavings = Number(goal.allocatedSavings);
+        const remaining = Math.max(0, goalAmount - totalSavings); //no negative numbers
+        const progress = Math.min(100,(totalSavings / goalAmount) * 100); //no more than 100%
+
+        // creating the card content
+        const card = document.createElement("li");
+        card.className = "saving-goal-card";
+
+        const name = document.createElement("h4");
+        name.textContent = goal.name;
+
+        const date = document.createElement("p");
+        date.textContent = `Target Date: ${goal.targetDate}`;
+
+        const amount = document.createElement("p");
+        amount.textContent = `Goal Amount: $${goalAmount.toFixed(2)}`;
+
+        const saved = document.createElement("p");
+        saved.textContent = `Total Savings: $${totalSavings.toFixed(2)}`;
+
+        const remainingText = document.createElement("p");
+        remainingText.textContent = `Remaining: $${remaining.toFixed(2)}`;
+
+        const progressText = document.createElement("p");
+        progressText.textContent = `Progress: ${progress.toFixed(1)}%`;
+
+        card.append(
+            name,
+            date,
+            amount,
+            saved,
+            remainingText,
+            progressText
+        );
+
+        goalContainer.appendChild(card);
+    });
+}
+
+// subject: transaction change save
+class TransactionSystem {
+    constructor() {
+        // list of observers watching transactions - balance total and saving goal calculation
+        this.observers = [];
+    }
+
+    // register an observer
+    addObserver(observer) {
+        this.observers.push(observer);
+    }
+
+    // notify observers when a transaction changes
+    async notify(eventType, data) {
+        const results = await Promise.allSettled(this.observers.map(observer => observer.update(eventType, data)));
+
+        results.forEach(result => {
+            if (result.status === "rejected") {
+                console.error("Observer update failed:", result.reason);
+            }
+        });
+    }
+
+    // save a transaction, then notify observers
+    async saveTransaction(transactionData) {
+        // reuse your existing API function
+        const result = await saveTransaction(transactionData);
+
+        // notify observers only after successful saving
+        await this.notify("transaction_added", result.transaction);
+        return result;
+    }
+}
+
+// create the subject
+const transactionSystem = new TransactionSystem();
+
+// observer 1: updates account balances when transactions change
+class BalanceObserver {
+    async update(eventType, data) {
+        // only react when a new transaction is recorded
+        if (eventType === "transaction_added") {
+            // retrieve updated balances
+            const balances = await getBalances();
+            // display the updated balances
+            displayBalances(balances);
+        }
+    }
+}
+
+// observer 2: updates savings goals when transactions change
+class SavingGoalObserver {
+    async update(eventType, data) {
+        // only react when a new transaction is recorded
+        if (eventType === "transaction_added") {
+            // retrieve updated savings goal allocations
+            const goals = await getSavingGoals();
+            // display the updated savings goal cards
+            displaySavingGoals(goals);
+        }
+    }
+}
+
+// create observer instances
+const balanceObserver = new BalanceObserver();
+const savingGoalObserver = new SavingGoalObserver();
+
+// register observers with the subject
+transactionSystem.addObserver(balanceObserver);
+transactionSystem.addObserver(savingGoalObserver);
+
 // retrive the account balances once you open the page
 // apply the category filter and save the new transaction record. then reflect the cahnge to the webpage
 document.addEventListener("DOMContentLoaded", async () => {
@@ -226,7 +393,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             // save transaction 
-            const result = await saveTransaction(transactionData);
+            const result = await transactionSystem.saveTransaction(transactionData);
 
             // display success message
             message.textContent = result.message;
@@ -235,14 +402,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             /// clear form
             transactionForm.reset();
             updateCategories("", categorySelect);
-
-            // refresh account balances
-            try {
-                const balances = await getBalances();
-                displayBalances(balances);
-            } catch (error) {
-                console.error("Unable to refresh account balances:", error);
-            }
 
             // show success message in a popup
             alert(result.message);
@@ -291,8 +450,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+// related to saving goals and progresses
+document.addEventListener("DOMContentLoaded", async () => {
+    const savingGoalForm = document.getElementById("saving-goal-form");
+    const savingGoalMessage = document.getElementById("saving-goal-message");
+
+    if (savingGoalForm) {
+        savingGoalForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            // retrieve the user's input
+            const goalData = {
+                name: document.getElementById("saving-goal-name").value.trim(),
+                goalAmount: Number(document.getElementById("saving-goal-amount").value),
+                targetDate: document.getElementById("saving-goal-date").value
+            };
+
+            try {
+                // save the goal 
+                const result = await saveSavingGoal(goalData);
+
+                // display success message
+                savingGoalMessage.textContent = result.message;
+                savingGoalMessage.style.color = "green";
+
+                // clear the form
+                savingGoalForm.reset();
+
+                // get updated savings goals
+                const goals = await getSavingGoals();
+
+                // display the updated goal cards
+                displaySavingGoals(goals);
+
+            } catch (error) {
+                savingGoalMessage.textContent = error.message;
+                savingGoalMessage.style.color = "red";
+            }
+        });
+    }
+
+    // loading the saving goal cards initiatelly
+    if (document.getElementById("saving-goal-cards")) {
+        try {
+            const goals = await getSavingGoals();
+            displaySavingGoals(goals);
+        } catch (error) {
+            console.error("Unable to load savings goals:", error);
+        }
+    }
+})
+
 // export functions for unit tests
 if (typeof module !== "undefined") {
     module.exports = {updateCategories, saveTransaction, getBalances, displayBalances, 
-        getTransactionSearchFilters, searchTransactions, displayTransactionSearchResults};
+        getTransactionSearchFilters, searchTransactions, displayTransactionSearchResults,
+        saveSavingGoal, getSavingGoals, displaySavingGoals};
 }
